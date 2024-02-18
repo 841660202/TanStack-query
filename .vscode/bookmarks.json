@@ -1,0 +1,194 @@
+{
+	"files": [
+		{
+			"path": "packages/query-core/src/query.ts",
+			"bookmarks": [
+				{
+					"line": 227,
+					"column": 2,
+					"label": ""
+				},
+				{
+					"line": 277,
+					"column": 2,
+					"label": ""
+				},
+				{
+					"line": 339,
+					"column": 2,
+					"label": ""
+				},
+				{
+					"line": 406,
+					"column": 4,
+					"label": ""
+				},
+				{
+					"line": 471,
+					"column": 4,
+					"label": ""
+				},
+				{
+					"line": 521,
+					"column": 0,
+					"label": ""
+				}
+			]
+		},
+		{
+			"path": "packages/query-core/src/mutation.ts",
+			"bookmarks": [
+				{
+					"line": 128,
+					"column": 6,
+					"label": ""
+				},
+				{
+					"line": 141,
+					"column": 4,
+					"label": ""
+				}
+			]
+		},
+		{
+			"path": "packages/query-core/src/notifyManager.ts",
+			"bookmarks": [
+				{
+					"line": 100,
+					"column": 4,
+					"label": ""
+				}
+			]
+		},
+		{
+			"path": "packages/query-core/src/subscribable.ts",
+			"bookmarks": [
+				{
+					"line": 10,
+					"column": 2,
+					"label": ""
+				}
+			]
+		},
+		{
+			"path": "packages/query-core/src/queryClient.ts",
+			"bookmarks": [
+				{
+					"line": 64,
+					"column": 2,
+					"label": ""
+				},
+				{
+					"line": 124,
+					"column": 0,
+					"label": ""
+				},
+				{
+					"line": 317,
+					"column": 4,
+					"label": ""
+				}
+			]
+		},
+		{
+			"path": "packages/query-core/src/mutationCache.ts",
+			"bookmarks": [
+				{
+					"line": 121,
+					"column": 2,
+					"label": ""
+				},
+				{
+					"line": 129,
+					"column": 2,
+					"label": ""
+				}
+			]
+		},
+		{
+			"path": "packages/query-core/src/retryer.ts",
+			"bookmarks": [
+				{
+					"line": 85,
+					"column": 0,
+					"label": ""
+				},
+				{
+					"line": 92,
+					"column": 0,
+					"label": ""
+				},
+				{
+					"line": 96,
+					"column": 0,
+					"label": ""
+				},
+				{
+					"line": 109,
+					"column": 4,
+					"label": ""
+				},
+				{
+					"line": 118,
+					"column": 4,
+					"label": ""
+				},
+				{
+					"line": 179,
+					"column": 8,
+					"label": ""
+				}
+			]
+		},
+		{
+			"path": "packages/query-core/src/mutationObserver.ts",
+			"bookmarks": [
+				{
+					"line": 109,
+					"column": 2,
+					"label": ""
+				}
+			]
+		},
+		{
+			"path": "packages/query-core/src/queriesObserver.ts",
+			"bookmarks": [
+				{
+					"line": 151,
+					"column": 0,
+					"label": ""
+				},
+				{
+					"line": 159,
+					"column": 4,
+					"label": ""
+				},
+				{
+					"line": 162,
+					"column": 4,
+					"label": ""
+				},
+				{
+					"line": 166,
+					"column": 6,
+					"label": ""
+				},
+				{
+					"line": 191,
+					"column": 2,
+					"label": ""
+				}
+			]
+		},
+		{
+			"path": "packages/react-query/src/useQueries.ts",
+			"bookmarks": [
+				{
+					"line": 284,
+					"column": 2,
+					"label": ""
+				}
+			]
+		}
+	]
+}

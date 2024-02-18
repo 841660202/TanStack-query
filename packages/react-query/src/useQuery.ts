@@ -43,5 +43,9 @@ export function useQuery<
 ): UseQueryResult<TData, TError>
 
 export function useQuery(options: UseQueryOptions, queryClient?: QueryClient) {
-  return useBaseQuery(options, QueryObserver, queryClient)
+  return useBaseQuery(
+    options,
+    QueryObserver /**注意这个字段，在api文档是没有的，useBaseQuery内部是required*/,
+    queryClient,
+  )
 }

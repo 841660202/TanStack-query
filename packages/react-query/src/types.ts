@@ -22,6 +22,7 @@ export interface UseBaseQueryOptions<
   TQueryData = TQueryFnData,
   TQueryKey extends QueryKey = QueryKey,
 > extends WithRequired<
+    // 来自于核心库的 QueryObserverOptions
     QueryObserverOptions<TQueryFnData, TError, TData, TQueryData, TQueryKey>,
     'queryKey'
   > {}

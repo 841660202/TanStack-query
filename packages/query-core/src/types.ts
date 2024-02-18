@@ -136,6 +136,11 @@ export interface QueryOptions<
    * If `true`, failed queries will retry infinitely., failureCount: num
    * If set to an integer number, e.g. 3, failed queries will retry until the failed query count meets that number.
    * If set to a function `(failureCount, error) => boolean` failed queries will retry until the function returns false.
+   * 如果是false，失败的查询将不会重试。
+   * 如果是true，失败的查询将无限重试。
+   * 如果设置为整数，例如3，失败的查询将重试直到失败的查询次数达到该数字。
+   * 如果设置为函数`(failureCount, error) => boolean`，失败的查询将重试直到函数返回false。
+   * Defaults to `true`.
    */
   retry?: RetryValue<TError>
   retryDelay?: RetryDelayValue<TError>
@@ -145,6 +150,10 @@ export interface QueryOptions<
    * When a query's cache becomes unused or inactive, that cache data will be garbage collected after this duration.
    * When different garbage collection times are specified, the longest one will be used.
    * Setting it to `Infinity` will disable garbage collection.
+   * 这个时间是以毫秒为单位的，未使用/不活动的缓存数据在内存中保留的时间。
+   * 当查询的缓存变得未使用或不活动时，该缓存数据将在此持续时间后进行垃圾回收。
+   * 当指定不同的垃圾回收时间时，将使用最长的时间。
+   * 将其设置为`Infinity`将禁用垃圾回收。
    */
   gcTime?: number
   queryFn?: QueryFunction<TQueryFnData, TQueryKey, TPageParam>
@@ -163,16 +172,22 @@ export interface QueryOptions<
    * Set this to `false` to disable structural sharing between query results.
    * Set this to a function which accepts the old and new data and returns resolved data of the same type to implement custom structural sharing logic.
    * Defaults to `true`.
+   * 将其设置为`false`以禁用查询结果之间的结构共享。
+   * 将其设置为一个接受旧数据和新数据并返回相同类型的已解析数据的函数，以实现自定义结构共享逻辑。
+   * 默认为`true`。
    */
   structuralSharing?: boolean | (<T>(oldData: T | undefined, newData: T) => T)
   _defaulted?: boolean
   /**
    * Additional payload to be stored on each query.
    * Use this property to pass information that can be used in other places.
+   * 附加到每个查询上的其他有效负载。
+   * 使用此属性传递可以在其他地方使用的信息。
    */
   meta?: QueryMeta
   /**
    * Maximum number of pages to store in the data of an infinite query.
+   * 最大页面数，存储在无限查询的数据中。
    */
   maxPages?: number
 }
@@ -227,17 +242,25 @@ export interface QueryObserverOptions<
    * Set this to `false` to disable automatic refetching when the query mounts or changes query keys.
    * To refetch the query, use the `refetch` method returned from the `useQuery` instance.
    * Defaults to `true`.
+   * 将其设置为`false`以在查询挂载或更改查询键时禁用自动重新获取。
+   * 要重新获取查询，请使用从`useQuery`实例返回的`refetch`方法。
+   * 默认为`true`。
    */
   enabled?: boolean
   /**
    * The time in milliseconds after data is considered stale.
    * If set to `Infinity`, the data will never be considered stale.
+   * 这个时间是以毫秒为单位的，数据被认为是过时的时间。
+   * 如果设置为`Infinity`，数据将永远不会被认为是过时的。
    */
   staleTime?: number
   /**
    * If set to a number, the query will continuously refetch at this frequency in milliseconds.
    * If set to a function, the function will be executed with the latest data and query to compute a frequency
    * Defaults to `false`.
+   * 如果设置为数字，查询将以毫秒为单位以这个频率持续重新获取。
+   * 如果设置为函数，将使用最新的数据和查询执行该函数来计算频率
+   * 默认为`false`。
    */
   refetchInterval?:
     | number
@@ -248,6 +271,8 @@ export interface QueryObserverOptions<
   /**
    * If set to `true`, the query will continue to refetch while their tab/window is in the background.
    * Defaults to `false`.
+   * 如果设置为`true`，查询将在其选项卡/窗口处于后台时继续重新获取。
+   * 默认为`false`。
    */
   refetchIntervalInBackground?: boolean
   /**
@@ -256,6 +281,11 @@ export interface QueryObserverOptions<
    * If set to `'always'`, the query will always refetch on window focus.
    * If set to a function, the function will be executed with the latest data and query to compute the value.
    * Defaults to `true`.
+   * 如果设置为`true`，查询将在窗口焦点上重新获取数据。
+   * 如果设置为`false`，查询将不会在窗口焦点上重新获取。
+   * 如果设置为`'always'`，查询将始终在窗口焦点上重新获取。
+   * 如果设置为函数，将使用最新的数据和查询执行该函数来计算值。
+   * 默认为`true`。
    */
   refetchOnWindowFocus?:
     | boolean
@@ -269,6 +299,11 @@ export interface QueryObserverOptions<
    * If set to `'always'`, the query will always refetch on reconnect.
    * If set to a function, the function will be executed with the latest data and query to compute the value.
    * Defaults to the value of `networkOnline` (`true`)
+   * 如果设置为`true`，查询将在重新连接时重新获取数据。
+   * 如果设置为`false`，查询将不会在重新连接时重新获取。
+   * 如果设置为`'always'`，查询将始终在重新连接时重新获取。
+   * 如果设置为函数，将使用最新的数据和查询执行该函数来计算值。
+   * 默认为`networkOnline`的值（`true`）
    */
   refetchOnReconnect?:
     | boolean
@@ -282,6 +317,11 @@ export interface QueryObserverOptions<
    * If set to `'always'`, the query will always refetch on mount.
    * If set to a function, the function will be executed with the latest data and query to compute the value
    * Defaults to `true`.
+   * 如果设置为`true`，查询将在挂载时重新获取数据。
+   * 如果设置为`false`，将禁用查询的其他实例触发后台重新获取。
+   * 如果设置为`'always'`，查询将始终在挂载时重新获取。
+   * 如果设置为函数，将使用最新的数据和查询执行该函数来计算值
+   * 默认为`true`。
    */
   refetchOnMount?:
     | boolean
@@ -292,6 +332,8 @@ export interface QueryObserverOptions<
   /**
    * If set to `false`, the query will not be retried on mount if it contains an error.
    * Defaults to `true`.
+   * 如果设置为`false`，如果查询包含错误，则查询将不会在挂载时重试。
+   * 默认为`true`。
    */
   retryOnMount?: boolean
   /**
@@ -300,6 +342,12 @@ export interface QueryObserverOptions<
    * When set to `'all'`, the component will re-render whenever a query is updated.
    * When set to a function, the function will be executed to compute the list of properties.
    * By default, access to properties will be tracked, and the component will only re-render when one of the tracked properties change.
+   * 如果设置，组件将仅在列出的任何属性更改时重新渲染。
+   * 当设置为`['data', 'error']`时，组件将仅在`data`或`error`属性更改时重新渲染。
+   * 当设置为`'all'`时，组件将在查询更新时重新渲染。
+   * 当设置为函数时，将执行该函数以计算属性列表。
+   * 默认情况下，将跟踪对属性的访问，并且组件将仅在更改跟踪的属性之一时重新渲染。
+   * @default ['data', 'error']
    */
   notifyOnChangeProps?: NotifyOnChangeProps
   /**
@@ -308,20 +356,28 @@ export interface QueryObserverOptions<
    * If set to `false` and `suspense` is `false`, errors are returned as state.
    * If set to a function, it will be passed the error and the query, and it should return a boolean indicating whether to show the error in an error boundary (`true`) or return the error as state (`false`).
    * Defaults to `false`.
+   * 是否应该抛出错误而不是设置`error`属性。
+   * 如果设置为`true`或`suspense`为`true`，所有错误都将抛出到错误边界。
+   * 如果设置为`false`并且`suspense`为`false`，错误将作为状态返回。
+   * 如果设置为函数，它将传递错误和查询，并且应该返回一个布尔值，指示是否在错误边界中显示错误（`true`）或将错误作为状态返回（`false`）。默认为`false`。
    */
   throwOnError?: ThrowOnError<TQueryFnData, TError, TQueryData, TQueryKey>
   /**
    * This option can be used to transform or select a part of the data returned by the query function.
+   * 这个选项可以用来转换或选择查询函数返回的数据的一部分。
    */
   select?: (data: TQueryData) => TData
   /**
    * If set to `true`, the query will suspend when `status === 'pending'`
    * and throw errors when `status === 'error'`.
    * Defaults to `false`.
+   * 如果设置为`true`，当`status === 'pending'`时，查询将挂起，并且当`status === 'error'`时抛出错误。
+   * 默认为`false`。
    */
   suspense?: boolean
   /**
    * If set, this value will be used as the placeholder data for this particular query observer while the query is still in the `loading` data and no initialData has been provided.
+   * 如果设置，此值将用作此特定查询观察者的占位符数据，而查询仍处于`loading`数据状态并且没有提供initialData。
    */
   placeholderData?:
     | NonFunctionGuard<TQueryData>

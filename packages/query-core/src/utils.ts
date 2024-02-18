@@ -214,6 +214,7 @@ export function partialMatchKey(a: any, b: any): boolean {
  * This function returns `a` if `b` is deeply equal.
  * If not, it will replace any deeply equal children of `b` with those of `a`.
  * This can be used for structural sharing between JSON values for example.
+ * 总体而言，这个函数的目的是在不改变 a 的情况下，只更新 a 和 b 不同的部分，从而避免不必要的数据复制。这种方法在性能敏感的应用中可能很有用，例如在 React 中避免不必要的渲染。
  */
 export function replaceEqualDeep<T>(a: unknown, b: T): T
 export function replaceEqualDeep(a: any, b: any): any {
@@ -322,6 +323,7 @@ export function replaceData<
     return options.structuralSharing(prevData, data)
   } else if (options.structuralSharing !== false) {
     // Structurally share data between prev and new data if needed
+    // 注释：这里的 replaceEqualDeep 函数的作用是在不改变 prevData 的情况下，只更新 prevData 和 data 不同的部分，从而避免不必要的数据复制。
     return replaceEqualDeep(prevData, data)
   }
   return data

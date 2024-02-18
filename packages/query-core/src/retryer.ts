@@ -66,18 +66,23 @@ export function isCancelledError(value: any): value is CancelledError {
 export function createRetryer<TData = unknown, TError = DefaultError>(
   config: RetryerConfig<TData, TError>,
 ): Retryer<TData> {
+  // 是否取消重试
   let isRetryCancelled = false
+  // 失败次数
   let failureCount = 0
+  // 是否已解决
   let isResolved = false
   let continueFn: ((value?: unknown) => boolean) | undefined
   let promiseResolve: (data: TData) => void
   let promiseReject: (error: TError) => void
+  // Promise：函数创建了一个新的 Promise 对象，该对象的 resolve 和 reject 方法被赋予内部变量 promiseResolve 和 promiseReject，以便在适当的时机解决或拒绝这个 Promise
+  // 这里有点奇怪，这个Promise 对象 的resolve 和 reject在之外的地方被调用了，这种写法也被允许？（见本文件底部）
 
   const promise = new Promise<TData>((outerResolve, outerReject) => {
     promiseResolve = outerResolve
     promiseReject = outerReject
   })
-
+  // cancel 方法允许外部取消重试操作，并调用 config.abort 方法（如果提供）来执行任何必要的清理
   const cancel = (cancelOptions?: CancelOptions): void => {
     if (!isResolved) {
       reject(new CancelledError(cancelOptions))
@@ -114,7 +119,7 @@ export function createRetryer<TData = unknown, TError = DefaultError>(
       promiseReject(value)
     }
   }
-
+  // pause 方法返回一个 Promise，它在 shouldPause 返回 true 时暂停执行。continueRetry 和 cancelRetry 方法控制是否应该继续或取消重试
   const pause = () => {
     return new Promise((continueResolve) => {
       continueFn = (value) => {
@@ -134,6 +139,7 @@ export function createRetryer<TData = unknown, TError = DefaultError>(
   }
 
   // Create loop function
+  // run 方法包含执行重试的主要逻辑。它调用 config.fn 函数（应该是执行异步操作的函数），并根据配置的重试策略来处理成功或失败的结果
   const run = () => {
     // Do nothing if already resolved
     if (isResolved) {
@@ -181,7 +187,7 @@ export function createRetryer<TData = unknown, TError = DefaultError>(
         config.onFail?.(failureCount, error)
 
         // Delay
-        sleep(delay)
+        sleep(delay) // 重试延迟
           // Pause if the document is not visible or when the device is offline
           .then(() => {
             if (shouldPause()) {
@@ -193,7 +199,7 @@ export function createRetryer<TData = unknown, TError = DefaultError>(
             if (isRetryCancelled) {
               reject(error)
             } else {
-              run()
+              run() // 继续执行重试
             }
           })
       })
@@ -217,3 +223,25 @@ export function createRetryer<TData = unknown, TError = DefaultError>(
     continueRetry,
   }
 }
+// 在 JavaScript 中，`Promise` 构造函数接受一个执行器函数（executor function）作为参数，这个函数本身接受两个参数：`resolve` 和 `reject` 函数。这些函数用于在异步操作完成时解决或拒绝 `Promise`。
+
+// 在你提到的代码中，`promiseResolve` 和 `promiseReject` 是在 `Promise` 构造函数外部定义的变量，它们在 `Promise` 的执行器函数内部被赋值。
+// 这是一种特殊的模式，通常被称为 "deferred"，它允许你在 `Promise` 的外部控制这个 `Promise` 的解决（resolve）或拒绝（reject）状态。
+
+// 这里是如何做到的：
+
+// ```javascript
+// let promiseResolve: (data: TData) => void;
+// let promiseReject: (error: TError) => void;
+
+// const promise = new Promise<TData>((outerResolve, outerReject) => {
+//   promiseResolve = outerResolve;
+//   promiseReject = outerReject;
+// });
+// ```
+
+// 在这段代码中，`promiseResolve` 和 `promiseReject` 被定义为变量，并在 `Promise` 的执行器函数内被赋值为 `resolve` 和 `reject` 函数。这样，即使在 `Promise` 构造函数的外部，你也可以通过调用 `promiseResolve(value)` 或 `promiseReject(error)` 来解决或拒绝这个 `Promise`。
+
+// 这种模式允许更灵活地处理异步操作，因为你可以在原始 `Promise` 创建的上下文之外解决或拒绝它。然而，这种做法也被认为是一种反模式，因为它打破了 `Promise` 的封装性，并且可能导致难以追踪的状态管理问题。通常，我们应该试图避免在 `Promise` 外部存储 `resolve` 和 `reject` 函数的引用，并且应该在 `Promise` 的执行器函数内部或通过 `.then`、`.catch` 和 `.finally` 方法来处理异步流程。
+
+// 不过，在某些复杂的异步控制流程中，特别是在库的内部实现时，这种模式可能是必要的，因为它提供了对异步操作更细粒度的控制。在这种情况下，使用这种模式的开发者需要格外小心，确保 `resolve` 和 `reject` 函数在合适的时机被调用，并且避免内存泄漏或状态不一致的问题。

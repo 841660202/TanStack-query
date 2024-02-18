@@ -158,6 +158,7 @@ export class QueriesObserver<
     trackResult: () => Array<QueryObserverResult>,
   ] {
     const matches = this.#findMatchingObservers(queries)
+
     const result = matches.map((match) =>
       match.observer.getOptimisticResult(match.defaultedQueryOptions),
     )
@@ -222,7 +223,8 @@ export class QueriesObserver<
         (o) => o.options.queryHash === defaultedOptions.queryHash,
       )
       return (
-        currentObserver ?? new QueryObserver(this.#client, defaultedOptions)
+        // 复用已有的 observer，或者创建新的 observer
+        currentObserver ?? new QueryObserver(this.#client, defaultedOptions) // new QueryObserver会发起请求
       )
     }
 
@@ -240,7 +242,7 @@ export class QueriesObserver<
     ): number =>
       defaultedQueryOptions.indexOf(a.defaultedQueryOptions) -
       defaultedQueryOptions.indexOf(b.defaultedQueryOptions)
-
+    // 返回复用的observer和新创建的observer
     return matchingObservers
       .concat(newOrReusedObservers)
       .sort(sortMatchesByOrderOfQueries)

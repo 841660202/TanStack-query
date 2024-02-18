@@ -1,5 +1,10 @@
 import { isServer, isValidTimeout } from './utils'
-
+// 抽象类，它的子类都有一个gcTime属性，这个属性是一个number类型的值，表示多久之后会被回收
+// destroy方法，这个方法会清除gcTimeout
+// scheduleGc方法，这个方法会清除gcTimeout，然后根据gcTime设置一个gcTimeout
+// updateGcTime方法，这个方法会更新gcTime
+// clearGcTimeout方法，这个方法会清除gcTimeout
+// optionalRemove方法，这个方法是一个抽象方法，它会在gcTimeout之后被调用
 export abstract class Removable {
   gcTime!: number
   #gcTimeout?: ReturnType<typeof setTimeout>

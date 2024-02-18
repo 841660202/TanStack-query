@@ -28,12 +28,14 @@ export const ensurePreventErrorBoundaryRetry = <
 ) => {
   if (options.suspense || options.throwOnError) {
     // Prevent retrying failed query if the error boundary has not been reset yet
+    // 如果错误边界尚未重置，则阻止重试失败的查询
     if (!errorResetBoundary.isReset()) {
       options.retryOnMount = false
     }
   }
 }
 
+// 这个函数的作用是清除错误边界的重置
 export const useClearResetErrorBoundary = (
   errorResetBoundary: QueryErrorResetBoundaryValue,
 ) => {

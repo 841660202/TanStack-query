@@ -148,6 +148,7 @@ export class Query<
   TError = DefaultError,
   TData = TQueryFnData,
   TQueryKey extends QueryKey = QueryKey,
+  // 继承自Removable， 默认可以调用一些方法scheduleGc, clearGcTimeout, updateGcTime, optionalRemove, destroy, reset, isActive, isDisabled, isStale, isStaleByTime, onFocus, onOnline, addObserver, removeObserver, getObserversCount, invalidate, fetch, setData, setState, cancel
 > extends Removable {
   queryKey: TQueryKey
   queryHash: string
@@ -174,10 +175,12 @@ export class Query<
     this.#cache = config.cache
     this.queryKey = config.queryKey
     this.queryHash = config.queryHash
+    // 初始化状态
     this.#initialState = config.state || getDefaultState(this.options)
     this.state = this.#initialState
     this.scheduleGc()
   }
+  // 参数原样返回
   get meta(): QueryMeta | undefined {
     return this.options.meta
   }
@@ -515,7 +518,7 @@ export class Query<
 
     return this.#promise
   }
-
+  // 状态更新dispatch-like 机制触发的，但这并不是开发者需要直接关心的部分
   #dispatch(action: Action<TData, TError>): void {
     const reducer = (
       state: QueryState<TData, TError>,
@@ -600,6 +603,7 @@ export class Query<
 
     notifyManager.batch(() => {
       this.#observers.forEach((observer) => {
+        2
         observer.onQueryUpdate()
       })
 

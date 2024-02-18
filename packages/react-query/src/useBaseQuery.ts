@@ -50,6 +50,8 @@ export function useBaseQuery<
   const defaultedOptions = client.defaultQueryOptions(options)
 
   // Make sure results are optimistically set in fetching state before subscribing or updating options
+  // 确定结果在订阅或更新选项之前乐观地设置为获取状态
+  // 默认：'optimistic'
   defaultedOptions._optimisticResults = isRestoring
     ? 'isRestoring'
     : 'optimistic'
@@ -58,7 +60,7 @@ export function useBaseQuery<
   ensurePreventErrorBoundaryRetry(defaultedOptions, errorResetBoundary)
 
   useClearResetErrorBoundary(errorResetBoundary)
-
+  // 创建一个新的观察者实例
   const [observer] = React.useState(
     () =>
       new Observer<TQueryFnData, TError, TData, TQueryData, TQueryKey>(
@@ -66,7 +68,7 @@ export function useBaseQuery<
         defaultedOptions,
       ),
   )
-
+  // 获取乐观结果
   const result = observer.getOptimisticResult(defaultedOptions)
 
   React.useSyncExternalStore(
@@ -91,6 +93,7 @@ export function useBaseQuery<
   React.useEffect(() => {
     // Do not notify on updates because of changes in the options because
     // these changes should already be reflected in the optimistic result.
+    // 不要在更新时通知，因为选项的更改应该已经反映在乐观的结果中。
     observer.setOptions(defaultedOptions, { listeners: false })
   }, [defaultedOptions, observer])
 
@@ -122,6 +125,7 @@ export function useBaseQuery<
   }
 
   // Handle result property usage tracking
+  // 处理结果属性使用跟踪
   return !defaultedOptions.notifyOnChangeProps
     ? observer.trackResult(result)
     : result

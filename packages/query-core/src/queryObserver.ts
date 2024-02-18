@@ -218,8 +218,9 @@ export class QueryObserver<
       TQueryKey
     >,
   ): QueryObserverResult<TData, TError> {
+    // 获取结果
     const query = this.#client.getQueryCache().build(this.#client, options)
-
+    // 格式化结果
     const result = this.createResult(query, options)
 
     if (shouldAssignObserverCurrentProperties(this, result)) {
@@ -236,9 +237,22 @@ export class QueryObserver<
       // out of sync already.
       // To solve this, we move the cursor of the currentResult everytime
       // an observer reads an optimistic value.
-
       // When keeping the previous data, the result doesn't change until new
       // data arrives.
+      // 这将乐观结果分配给当前观察者
+      // 因为如果查询函数更改，useQuery将执行
+      // 一个效果，它将再次获取。
+      // 当获取完成时，我们执行一个深度数据克隆，以便
+      // 重用对象引用。此深度数据克隆是针对
+      // `observer.currentResult.data`属性
+      // 当QueryKey更改时，我们刷新查询并获取新的`乐观`
+      // 结果，同时保留`observer.currentResult`，因此当新数据到达时
+      // 它找到了旧的`observer.currentResult`，它与旧的QueryKey相关联。
+      // 这意味着currentResult和selectData已经不同步了。
+      // 为了解决这个问题，我们每次都移动currentResult的光标
+      // 观察者读取乐观值时。
+      // 保留上一个数据时，结果直到新数据到达才会改变。
+
       this.#currentResult = result
       this.#currentResultOptions = this.options
       this.#currentResultState = this.#currentQuery.state

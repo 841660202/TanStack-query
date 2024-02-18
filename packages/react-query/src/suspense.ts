@@ -24,6 +24,7 @@ export const ensureStaleTime = (
   if (defaultedOptions.suspense) {
     // Always set stale time when using suspense to prevent
     // fetching again when directly mounting after suspending
+    // 使用suspense时始终设置过时时间以防止在直接挂载后挂起时再次获取
     if (typeof defaultedOptions.staleTime !== 'number') {
       defaultedOptions.staleTime = 1000
     }

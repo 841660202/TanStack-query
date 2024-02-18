@@ -159,6 +159,7 @@ export class Mutation<
     return (
       this.#retryer?.continue() ??
       // continuing a mutation assumes that variables are set, mutation must have been dehydrated before
+      // 继续一个mutation意味着variables已经被设置，mutation必须在脱水之前
       this.execute(this.state.variables!)
     )
   }
